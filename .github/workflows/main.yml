@@ -1,32 +1,29 @@
-name: Test imgpatchtools
+name: Inspect imgpatchtools
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  inspect:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build imgpatchtools
+      - name: Inspect imgpatchtools
         run: |
           git clone https://github.com/adamwasowicz9-yansk/imgpatchtools.git
 
-          sudo apt-get update
+          echo "===== ROOT ====="
+          ls -lah imgpatchtools
 
-          sudo apt-get install -y \
-            build-essential \
-            zlib1g-dev \
-            libbz2-dev \
-            libssl-dev
+          echo ""
+          echo "===== FILES ====="
+          find imgpatchtools -maxdepth 3 -type f | sort
 
-          cd imgpatchtools
-
-          make -j"$(nproc)"
-
-          echo "===== OUTPUT ====="
-
-          find . -type f -executable | sort
+          echo ""
+          echo "===== BUILD FILES ====="
+          find imgpatchtools \
+            \( -name Makefile -o -name makefile -o -name CMakeLists.txt -o -name "*.mk" \) \
+            | sort
